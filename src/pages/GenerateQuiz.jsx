@@ -1,11 +1,17 @@
-import { useState } from 'react'
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar'
 import PageHeader from '../components/PageHeader'
+import QuizHeader from '../components/QuizHeader'
+import GenerateQuizPopup from '../components/GenerateQuizPopup'
 
 export default function GenerateQuiz() {
+  const navigate = useNavigate();
   const [courseContent, setCourseContent] = useState('')
   const [activeFilter, setActiveFilter] = useState('All')
   const [isGenerating, setIsGenerating] = useState(false)
+  const [showPopup, setShowPopup] = useState(false)
+  const [popupType, setPopupType] = useState('') // 'qcm' ou 'flashcards'
 
   const filters = ['All', 'Analyse', 'algo', 'Analyse des donnes', 'Analyse', 'Analyse', 'Analyse']
 
@@ -30,33 +36,113 @@ export default function GenerateQuiz() {
     }
   ]
 
-  const handleImportFile = () => {
-    // Logique pour importer un fichier
-    const input = document.createElement('input')
-    input.type = 'file'
-    input.accept = '.pdf,.doc,.docx,.txt'
-    input.onchange = (e) => {
-      const file = e.target.files[0]
-      if (file) {
-        // Ici vous pouvez ajouter la logique pour lire le fichier
-        console.log('Fichier importé:', file.name)
+  const handleImportFile = async () => {
+    try {
+      // Création d'un input de type fichier
+      const input = document.createElement('input')
+      input.type = 'file'
+      input.accept = '.pdf,.doc,.docx,.txt,.md,.csv,.json'
+      
+      // Gestion de la sélection du fichier
+      input.onchange = async (e) => {
+        const file = e.target.files[0]
+        if (!file) return
+
+        try {
+          // Vérification de la taille du fichier (max 5MB)
+          if (file.size > 5 * 1024 * 1024) {
+            alert('Le fichier est trop volumineux. La taille maximale est de 5MB.')
+            return
+          }
+
+          // Lecture du contenu du fichier
+          const content = await readFileContent(file)
+          
+          // Mise à jour du contenu du cours avec le contenu du fichier
+          setCourseContent(prevContent => 
+            prevContent ? `${prevContent}\n\n${content}` : content
+          )
+          
+          // Feedback à l'utilisateur
+          alert(`Fichier "${file.name}" importé avec succès !`)
+          
+        } catch (error) {
+          console.error('Erreur lors de la lecture du fichier:', error)
+          alert('Une erreur est survenue lors de la lecture du fichier.')
+        }
       }
+      
+      // Déclencher la sélection de fichier
+      input.click()
+      
+    } catch (error) {
+      console.error('Erreur lors de l\'importation du fichier:', error)
+      alert('Une erreur est survenue lors de l\'importation du fichier.')
     }
-    input.click()
+  }
+  
+  // Fonction utilitaire pour lire le contenu d'un fichier
+  const readFileContent = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      
+      reader.onload = (event) => {
+        resolve(event.target.result)
+      }
+      
+      reader.onerror = (error) => {
+        reject(error)
+      }
+      
+      // Lecture en fonction du type de fichier
+      if (file.type === 'application/pdf') {
+        // Pour les PDF, on pourrait utiliser une bibliothèque comme pdf.js
+        // Pour l'instant, on retourne juste le nom du fichier
+        resolve(`[Fichier PDF: ${file.name}]`)
+      } else if (file.type.includes('word') || file.name.endsWith('.docx') || file.name.endsWith('.doc')) {
+        // Pour les documents Word, on pourrait utiliser une bibliothèque comme mammoth.js
+        // Pour l'instant, on retourne juste le nom du fichier
+        resolve(`[Document Word: ${file.name}]`)
+      } else {
+        // Pour les fichiers texte, CSV, etc.
+        reader.readAsText(file)
+      }
+    })
   }
 
-  const handleGenerateQCM = () => {
+  const handleOpenPopup = (type) => {
     if (!courseContent.trim()) {
       alert('Veuillez coller ou importer le contenu du cours d\'abord')
       return
     }
+    setPopupType(type)
+    setShowPopup(true)
+  }
+
+  const handleConfirmGeneration = () => {
+    setShowPopup(false)
     setIsGenerating(true)
+    
     // Simuler la génération
     setTimeout(() => {
       setIsGenerating(false)
-      console.log('Génération QCM pour:', courseContent)
-      // Ici vous pouvez ajouter la logique pour générer le QCM
+      console.log(`Génération ${popupType === 'qcm' ? 'QCM' : 'Flashcards'} pour:`, courseContent)
+      // Ici vous pouvez ajouter la logique pour générer le QCM ou les flashcards
     }, 2000)
+  }
+
+  const handleGenerateQCM = () => {
+    if (!courseContent.trim()) {
+      alert('Veuillez coller ou importer le contenu du cours d\'abord');
+      return;
+    }
+    // Naviguer vers la page de génération de QCM avec le contenu du cours
+    navigate('/generate-qcm', { 
+      state: { 
+        content: courseContent,
+        // Vous pouvez ajouter d'autres données à passer si nécessaire
+      } 
+    });
   }
 
   const handleGenerateFlashcards = () => {
@@ -93,9 +179,9 @@ export default function GenerateQuiz() {
         />
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto bg-[#FFFEEC]">
+        <div className="flex-1 overflow-y-auto bg-[#FFFEEC] p-6">
           {/* Import/Paste Course Section */}
-          <div className="px-6 py-6">
+          <div className="bg-white rounded-xl shadow-sm p-6">
             <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">
                 Importer / Coller un cours
@@ -162,9 +248,38 @@ export default function GenerateQuiz() {
               </div>
             </div>
           </div>
-
+          
+          {/* Titre et étiquettes de quiz */}
+          <div className="mt-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">All Study Sets</h2>
+            <div className="space-y-6">
+            <QuizHeader />
+            <QuizHeader 
+              title="Quiz sur les dérivées"
+              correctAnswers={8}
+              wrongAnswers={3}
+              totalQuestions={11}
+              lastUpdated="Hier"
+            />
+            <QuizHeader 
+              title="Quiz sur les limites"
+              correctAnswers={10}
+              wrongAnswers={2}
+              totalQuestions={12}
+              lastUpdated="Il y a 3 jours"
+            />
+            </div>
+          </div>
         </div>
       </main>
+
+      {/* Popup de confirmation */}
+      <GenerateQuizPopup
+        isOpen={showPopup}
+        onClose={() => setShowPopup(false)}
+        onConfirm={handleConfirmGeneration}
+        type={popupType}
+      />
     </div>
   )
 }

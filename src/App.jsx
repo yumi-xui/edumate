@@ -7,6 +7,8 @@ import Groups from './pages/Groups'
 import GroupDetails from './pages/GroupDetails'
 import CreateGroup from './pages/CreateGroup'
 import GenerateQuiz from './pages/GenerateQuiz'
+import GenerateQcmPage from './pages/GenerateQcmPage'
+import HomePage from './pages/HomePage'
 import './App.css'
 
 export default function App() {
@@ -17,10 +19,13 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/" element={<Groups />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/groupes" element={<Groups />} />
           <Route path="/group/:id" element={<GroupDetails />} />
           <Route path="/create-group" element={<CreateGroup />} />
+          <Route path="/generer-quiz" element={<GenerateQuiz />} />
           <Route path="/generate-quiz" element={<GenerateQuiz />} />
+          <Route path="/generate-qcm" element={<GenerateQcmPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>

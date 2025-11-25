@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { supabase } from '../lib/supabase'
 import Sidebar from '../components/Sidebar'
 import PageHeader from '../components/PageHeader'
 
@@ -10,6 +11,8 @@ export default function CreateGroup() {
     description: '',
     category: ''
   })
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -19,12 +22,59 @@ export default function CreateGroup() {
     }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Ici vous pouvez ajouter la logique pour créer le groupe (appel API, etc.)
-    console.log('Création du groupe:', formData)
-    // Rediriger vers la page des groupes après création
-    navigate('/')
+    setError('')
+    setIsLoading(true)
+
+    try {
+      // Vérifier que l'utilisateur est connecté
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      if (!user) {
+        throw new Error('Vous devez être connecté pour créer un groupe')
+      }
+
+      // Insérer le nouveau groupe dans la table 'groups'
+      const { data: newGroup, error: insertError } = await supabase
+        .from('groups')
+        .insert([
+          { 
+            name: formData.title,
+            description: formData.description,
+            category: formData.category,
+            created_by: user.id,
+            created_at: new Date().toISOString()
+          }
+        ])
+        .select()
+        .single()
+
+      if (insertError) throw insertError
+
+      // Ajouter l'utilisateur comme membre du groupe avec le rôle 'admin'
+      const { error: memberError } = await supabase
+        .from('group_members')
+        .insert([
+          {
+            group_id: newGroup.id,
+            user_id: user.id,
+            role: 'admin',
+            joined_at: new Date().toISOString()
+          }
+        ])
+
+      if (memberError) throw memberError
+
+      // Rediriger vers la page des groupes après création réussie
+      navigate('/groups')
+      
+    } catch (error) {
+      console.error('Erreur lors de la création du groupe:', error)
+      setError(error.message || 'Une erreur est survenue lors de la création du groupe')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleCancel = () => {
@@ -98,23 +148,40 @@ export default function CreateGroup() {
                     onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7A4BC7] focus:border-transparent outline-none transition-all"
                     placeholder="Ex: Physique, Mathématiques, etc."
+                    required
                   />
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex items-center justify-end gap-4 pt-4">
+                {error && (
+                  <div className="p-4 bg-red-50 text-red-700 rounded-lg text-sm">
+                    {error}
+                  </div>
+                )}
+                <div className="flex justify-end space-x-4 pt-6">
                   <button
                     type="button"
                     onClick={handleCancel}
-                    className="px-6 py-2 bg-white text-gray-700 border-2 border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                    disabled={isLoading}
+                    className="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
                   >
                     Annuler
                   </button>
                   <button
                     type="submit"
-                    className="px-6 py-2 bg-[#7A4BC7] text-white rounded-lg font-semibold hover:bg-[#6a3fb8] transition-colors"
+                    disabled={isLoading}
+                    className="px-6 py-2.5 bg-[#7A4BC7] text-white font-medium rounded-lg hover:bg-[#6a3fb0] transition-colors disabled:opacity-50 flex items-center justify-center min-w-[140px]"
                   >
-                    Créer le groupe
+                    {isLoading ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Création...
+                      </>
+                    ) : (
+                      'Créer le groupe'
+                    )}
                   </button>
                 </div>
               </form>
