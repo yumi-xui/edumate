@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../assets/react.svg';
+import logo from '../assets/Group 2.png';
 
 const Header = () => {
   return (
@@ -8,8 +8,7 @@ const Header = () => {
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
         <div className="flex items-center">
           <Link to="/" className="flex items-center">
-            <img src={logo} alt="Edumate Logo" className="h-10 mr-2" />
-            <span className="text-2xl font-bold text-indigo-700">Edumate</span>
+            <img src={logo} alt="Edumate Logo" className="h-12" />
           </Link>
           <nav className="ml-10 hidden md:flex space-x-8">
             <Link to="/" className="text-gray-700 hover:text-indigo-600 font-medium">Accueil</Link>
@@ -23,7 +22,7 @@ const Header = () => {
           </Link>
           <Link 
             to="/signup" 
-            className="px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition"
+            className="px-6 py-2 bg-violet-600 text-white font-medium rounded-lg hover:bg-violet-700 transition"
           >
             Sign up
           </Link>
