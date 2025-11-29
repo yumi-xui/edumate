@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
@@ -8,14 +8,15 @@ import GroupDetails from './pages/GroupDetails'
 import CreateGroup from './pages/CreateGroup'
 import GenerateQuiz from './pages/GenerateQuiz'
 import GenerateQcmPage from './pages/GenerateQcmPage'
+import QCMQuiz from './pages/QCMQuiz'
 import HomePage from './pages/HomePage'
+import ProfilePage from './pages/ProfilePage'
 import './App.css'
 
 export default function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
+      <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -26,9 +27,11 @@ export default function App() {
           <Route path="/generer-quiz" element={<GenerateQuiz />} />
           <Route path="/generate-quiz" element={<GenerateQuiz />} />
           <Route path="/generate-qcm" element={<GenerateQcmPage />} />
+          <Route path="/quiz" element={<QCMQuiz />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </Router>
     </AuthProvider>
   )
 }
+
