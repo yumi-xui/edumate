@@ -1,10 +1,11 @@
-from config import supabase, BUCKET_NAME
+from ..config import supabase, BUCKET_NAME
 from datetime import datetime
 from fastapi import Query
+
 def create_cour(user_id: int, cour_title: str):
     """Crée un nouveau cour dans la base de données"""
     try:
-        cour_insert = supabase.table("cour").insert({
+        cour_insert = supabase.table("Cours").insert({
             "user_id": user_id,
             "title": cour_title,
             "created_at": datetime.now().isoformat()

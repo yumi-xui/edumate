@@ -1,6 +1,6 @@
 import json
 import re
-from config import client
+from ..config import client
 
 # ---------------------------
 # Génération Quiz / Flashcards

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import pytesseract
-from routes.routes import router as pdf_router
+from .routes.routes import router as pdf_router
 
 # Afficher version Tesseract
 print(pytesseract.get_tesseract_version())
