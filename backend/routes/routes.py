@@ -1,11 +1,11 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException ,Query
-from services.pdf_service import extract_pdf_text
-from services.ai_service import generate_quiz_from_text, generate_flashcards_from_text
-from services.storage_service import (get_quiz_by_id,get_all_cours,get_flashcards_by_user,
+from ..services.pdf_service import extract_pdf_text
+from ..services.ai_service import generate_quiz_from_text, generate_flashcards_from_text
+from ..services.storage_service import (get_quiz_by_id,get_all_cours,get_flashcards_by_user,
     create_cour, upload_pdf, update_cour_filepath, get_cour, download_pdf,
     insert_quiz, insert_quiz_question, insert_flashcard,
 )
-from config import supabase
+from ..config import supabase
 router = APIRouter(prefix="/api", tags=["PDF"])
 
 # ---------------------------
@@ -57,8 +57,8 @@ async def upload_pdf_route(user_id: int, cour_title: str, file: UploadFile = Fil
 async def generate_quiz(cour_id: int, user_id: int, num_questions: int = 10):
     try:
         # Récupérer le cour
-        cour = get_cour(cour_id)
-
+        resp = get_cour(cour_id)      # ceci renvoie { 'success': True, 'cour': {...} }
+        cour = resp["cour"]           # prendre le dictionnaire interne
         # Télécharger le PDF
         file_bytes = download_pdf(cour["file_path"])
         text = extract_pdf_text(file_bytes)
@@ -90,13 +90,18 @@ async def generate_quiz(cour_id: int, user_id: int, num_questions: int = 10):
 # ROUTE 3 : Générer flashcards
 # ---------------------------
 @router.post("/generate-flashcards")
-async def generate_flashcards(cour_id: int, user_id: int, num_cards: int ):
+def generate_flashcards(cour_id: int, user_id: int, num_cards: int ):
     try:
         # Récupérer le cour
-        cour = get_cour(cour_id)
+        resp = get_cour(cour_id)      # ceci renvoie { 'success': True, 'cour': {...} }
+        cour = resp["cour"]           # prendre le dictionnaire interne
 
+        if not cour:
+          raise HTTPException(status_code=404, detail=f"Cour {cour_id} non trouvé")
+        if "file_path" not in cour or not cour["file_path"]:
+            raise HTTPException(status_code=400, detail="Le cour n'a pas de fichier associé")
         # Télécharger le PDF
-        file_bytes = download_pdf(cour["file_path"])
+        file_bytes =  download_pdf(cour["file_path"])
         text = extract_pdf_text(file_bytes)
 
         # Générer les flashcards
@@ -123,7 +128,7 @@ async def generate_flashcards(cour_id: int, user_id: int, num_cards: int ):
 # ROUTE 2 : Récupérer tous les quiz d'un cours
 # ---------------------------
 @router.get("/cours/{user_id}")
-async def get_user_cours(user_id: int):
+def get_user_cours(user_id: int):
     try:
         resp = supabase.table("Cours").select("*").eq("user_id", user_id).execute()
         return {"success": True, "cours": resp.data}
@@ -132,7 +137,7 @@ async def get_user_cours(user_id: int):
 
 # --- GET tous les quiz d'un cour ---
 @router.get("/quiz/cour/{cour_id}")
-async def get_cour_quizzes(cour_id: int):
+def get_cour_quizzes(cour_id: int):
     try:
         resp = supabase.table("quiz").select("*").eq("cour_id", cour_id).execute()
         return {"success": True, "quizzes": resp.data}
@@ -150,7 +155,7 @@ async def get_quiz_questions(quiz_id: int):
 
 # --- GET toutes les flashcards d'un cour ---
 @router.get("/flashcards/cour/{cour_id}")
-async def get_cour_flashcards(cour_id: int):
+def get_cour_flashcards(cour_id: int):
     try:
         resp = supabase.table("flashcard").select("*").eq("cour_id", cour_id).execute()
         return {"success": True, "flashcards": resp.data}
@@ -159,7 +164,7 @@ async def get_cour_flashcards(cour_id: int):
 
 # --- GET toutes les flashcards d'un user ---
 @router.get("/flashcards/user/{user_id}")
-async def get_user_flashcards(user_id: int):
+def get_user_flashcards(user_id: int):
     try:
         resp = supabase.table("flashcard").select("*").eq("user_id", user_id).execute()
         return {"success": True, "flashcards": resp.data}
@@ -168,7 +173,7 @@ async def get_user_flashcards(user_id: int):
 
 # --- GET un quiz spécifique ---
 @router.get("/quiz/{quiz_id}")
-async def get_quiz(quiz_id: int):
+def get_quiz(quiz_id: int):
     try:
         resp = supabase.table("quiz").select("*").eq("id", quiz_id).execute()
         if not resp.data:
@@ -179,7 +184,7 @@ async def get_quiz(quiz_id: int):
 
 # --- GET un cour spécifique ---
 @router.get("/cour/{cour_id}")
-async def get_cour(cour_id: int):
+def get_cour(cour_id: int):
     try:
         resp = supabase.table("Cours").select("*").eq("id", cour_id).execute()
         if not resp.data:
