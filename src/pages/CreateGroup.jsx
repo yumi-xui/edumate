@@ -1,31 +1,51 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
-import Sidebar from '../components/Sidebar'
-import PageHeader from '../components/PageHeader'
+// Importation des dépendances nécessaires
+import { useState } from 'react'  // Gestion de l'état local du composant
+import { useNavigate } from 'react-router-dom'  // Navigation entre les pages
+import { supabase } from '../lib/supabase'  // Client Supabase pour les opérations de base de données
+import Sidebar from '../components/Sidebar'  // Barre latérale de navigation
+import PageHeader from '../components/PageHeader'  // En-tête de page personnalisé
 
+/**
+ * Composant CreateGroup
+ * Permet à un utilisateur de créer un nouveau groupe d'étude
+ * Gère la soumission du formulaire, la validation et la création du groupe dans la base de données
+ */
 export default function CreateGroup() {
+  // Utilisation du hook useNavigate pour la navigation entre les pages
   const navigate = useNavigate()
+  
+  // État pour stocker les données du formulaire
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    category: ''
+    title: '',        // Titre du groupe
+    description: '',  // Description du groupe
+    category: ''      // Catégorie du groupe
   })
+  
+  // État pour gérer le chargement pendant la soumission du formulaire
   const [isLoading, setIsLoading] = useState(false)
+  // État pour stocker les messages d'erreur
   const [error, setError] = useState('')
 
+  /**
+   * Gère les changements dans les champs du formulaire
+   * @param {Object} e - L'événement de changement
+   */
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: value  // Met à jour dynamiquement le champ modifié
     }))
   }
 
+  /**
+   * Gère la soumission du formulaire de création de groupe
+   * @param {Event} e - L'événement de soumission du formulaire
+   */
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError('')
-    setIsLoading(true)
+    e.preventDefault()  // Empêche le rechargement de la page
+    setError('')  // Réinitialise les erreurs précédentes
+    setIsLoading(true)  // Active l'état de chargement
 
     try {
       // Vérifier que l'utilisateur est connecté
@@ -77,31 +97,40 @@ export default function CreateGroup() {
     }
   }
 
+  /**
+   * Gère l'annulation de la création du groupe
+   * Redirige l'utilisateur vers la page d'accueil
+   */
   const handleCancel = () => {
-    navigate('/')
+    navigate('/')  // Navigation vers la page d'accueil
   }
 
+  // Rendu du composant
   return (
     <div className="flex h-screen bg-white">
+      {/* Barre latérale de navigation */}
       <Sidebar activeMenuItem="mes-groupes" />
 
-      {/* Main Content */}
+      {/* Contenu principal */}
       <main className="flex-1 flex flex-col bg-white">
+        {/* En-tête de la page avec titre et barre de recherche */}
         <PageHeader 
           greeting="Créer un nouveau groupe"
           searchPlaceholder="Rechercher..."
         />
 
-        {/* Form Content */}
+        {/* Contenu du formulaire */}
         <div className="flex-1 p-6 overflow-y-auto bg-[#FFFEEC]">
+          {/* Conteneur centré avec largeur maximale */}
           <div className="max-w-2xl mx-auto">
+            {/* Carte du formulaire */}
             <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-sm">
               <h2 className="text-2xl font-semibold text-gray-900 mb-6">
                 Informations du groupe
               </h2>
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Title Field */}
+                {/* Champ pour le titre du groupe */}
                 <div>
                   <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
                     Nom du groupe *
@@ -118,7 +147,7 @@ export default function CreateGroup() {
                   />
                 </div>
 
-                {/* Description Field */}
+                {/* Champ pour la description du groupe */}
                 <div>
                   <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
                     Description *
@@ -135,7 +164,7 @@ export default function CreateGroup() {
                   />
                 </div>
 
-                {/* Category Field */}
+                {/* Champ pour la catégorie du groupe */}
                 <div>
                   <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
                     Catégorie
@@ -152,11 +181,13 @@ export default function CreateGroup() {
                   />
                 </div>
 
+                {/* Affichage des messages d'erreur */}
                 {error && (
                   <div className="p-4 bg-red-50 text-red-700 rounded-lg text-sm">
                     {error}
                   </div>
                 )}
+                {/* Boutons d'action */}
                 <div className="flex justify-end space-x-4 pt-6">
                   <button
                     type="button"
