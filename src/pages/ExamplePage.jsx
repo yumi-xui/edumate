@@ -1,18 +1,38 @@
-// Exemple d'utilisation des composants dans une autre page
-import { useState } from 'react'
-import { Sidebar, PageHeader, CategoryTabs, StudySetHeader, StudySetCard } from '../components'
+/**
+ * Exemple d'implémentation d'une page démontrant l'utilisation des composants communs
+ * Cette page sert de référence pour la structure et l'utilisation des composants partagés
+ */
 
+// Importation des dépendances
+import { useState } from 'react'  // Hook React pour gérer l'état local
+
+// Importation des composants personnalisés depuis le dossier components
+import { 
+  Sidebar,         // Barre latérale de navigation
+  PageHeader,      // En-tête de page personnalisé
+  CategoryTabs,    // Navigation par onglets de catégories
+  StudySetHeader,  // En-tête pour la section des séries d'étude
+  StudySetCard     // Carte représentant une série d'étude
+} from '../components'
+
+/**
+ * Composant ExamplePage
+ * Affiche une page exemple avec différents composants d'interface utilisateur
+ * pour démontrer leur utilisation et leur intégration
+ */
 export default function ExamplePage() {
+  // État pour suivre l'onglet actif dans la navigation par catégories
   const [activeTab, setActiveTab] = useState('tous les sets')
 
-  // Exemple de données pour les cartes d'étude
+  // Données de démonstration pour les cartes d'étude
+  // En situation réelle, ces données viendraient probablement d'une API
   const studySets = [
     {
-      id: 1,
-      title: 'Question sur intégrales',
-      correctAnswers: 12,
-      wrongAnswers: 5,
-      tags: ['Mathématiques', 'Analyse', 'Intégrales']
+      id: 1,  // Identifiant unique de la série d'étude
+      title: 'Question sur intégrales',  // Titre de la série
+      correctAnswers: 12,  // Nombre de réponses correctes
+      wrongAnswers: 5,     // Nombre de réponses incorrectes
+      tags: ['Mathématiques', 'Analyse', 'Intégrales']  // Étiquettes de catégorisation
     },
     {
       id: 2,
