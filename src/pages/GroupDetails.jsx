@@ -1,16 +1,36 @@
-import { useState } from 'react'
+/**
+ * Page de détails d'un groupe
+ * Affiche les informations détaillées d'un groupe spécifique et permet d'interagir avec celui-ci
+ */
+
+// Importation des hooks React
+import { useState } from 'react'  // Gestion de l'état local
+
+// Importation des hooks de routage
 import { useParams, useNavigate } from 'react-router-dom'
-import Sidebar from '../components/Sidebar'
-import PageHeader from '../components/PageHeader'
+
+// Importation des composants personnalisés
+import Sidebar from '../components/Sidebar'      // Barre latérale de navigation
+import PageHeader from '../components/PageHeader' // En-tête de page personnalisé
 
 export default function GroupDetails() {
+  // Récupération de l'ID du groupe depuis les paramètres d'URL
   const { id } = useParams()
+  
+  // Hook pour la navigation programmatique
   const navigate = useNavigate()
+  
+  // État pour gérer l'onglet actif dans la vue des détails du groupe
   const [activeTab, setActiveTab] = useState('fil-actualite')
+  
+  // État pour gérer la visibilité de la barre latérale
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
+  /**
+   * Bascule la visibilité de la barre latérale
+   */
   const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen)
+    setIsSidebarOpen(!isSidebarOpen)  // Inverse l'état actuel de la barre latérale
   }
 
   // Données du groupe (en production, cela viendrait d'une API)
