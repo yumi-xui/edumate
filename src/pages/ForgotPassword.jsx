@@ -1,19 +1,40 @@
-import { useState } from 'react'
+/**
+ * Page de réinitialisation de mot de passe
+ * Permet aux utilisateurs de demander un lien de réinitialisation de mot de passe par email
+ */
+
+// Importation des dépendances React
+import { useState } from 'react'  // Gestion de l'état local
+
+// Importation des hooks de routage
 import { useNavigate, Link } from 'react-router-dom'
+
+// Importation du contexte d'authentification
 import { useAuth } from '../contexts/AuthContext'
+
+// Importation de l'image de fond
 import backgroundImage from '../assets/frame 2329 (1).png'
 
 export default function ForgotPassword() {
+  // Hook de navigation pour rediriger l'utilisateur
   const navigate = useNavigate()
+  
+  // Récupération de la fonction resetPassword depuis le contexte d'authentification
   const { resetPassword } = useAuth()
-  const [email, setEmail] = useState('')
-  const [error, setError] = useState(null)
-  const [success, setSuccess] = useState(false)
-  const [loading, setLoading] = useState(false)
+  
+  // États locaux pour gérer le formulaire
+  const [email, setEmail] = useState('')        // Email de l'utilisateur
+  const [error, setError] = useState(null)      // Message d'erreur
+  const [success, setSuccess] = useState(false) // État de succès de la demande
+  const [loading, setLoading] = useState(false) // État de chargement pendant la soumission
 
+  /**
+   * Gère la soumission du formulaire de réinitialisation de mot de passe
+   * @param {Event} e - L'événement de soumission du formulaire
+   */
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError(null)
+    e.preventDefault()  // Empêche le rechargement de la page
+    setError(null)      // Réinitialise les erreurs précédentes
     setLoading(true)
 
     const { error: resetError } = await resetPassword(email)
