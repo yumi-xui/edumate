@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HAPPY BIRTHDAY 💕</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --pink:#ff5757;
+  --pink-deep:#c81d25;
+  --lilac:#ff8080;
+  --lilac-deep:#8b0000;
+  --cream:#fff5f5;
+  --text:#6b1a1a;
+  --gold:#f0c040;
+}
+
+body{
+  font-family:'Quicksand',sans-serif;
+  background:linear-gradient(135deg,#fff5f5 0%,#ffe0e0 50%,#fff5f5 100%);
+  min-height:100vh;
+  color:var(--text);
+  overflow-x:hidden;
+}
+/* BOUTON MUSIQUE */
+#musicBtn {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 999;
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--pink-deep), var(--lilac-deep));
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(200, 29, 37, 0.3);
+    transition: transform 0.3s;
+}
+
+#musicBtn:hover {
+    transform: scale(1.1);
+}
+
+
+/* HEARTS */
+.hearts-bg{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden;}
+.heart-p{position:absolute;bottom:-50px;opacity:0;animation:floatUp linear infinite;}
+@keyframes floatUp{0%{transform:translateY(0) rotate(0deg);opacity:.7}100%{transform:translateY(-110vh) rotate(360deg);opacity:0}}
+
+/* HERO */
+.hero{position:relative;z-index:1;text-align:center;padding:70px 20px 30px;}
+.hero .sub{font-size:13px;letter-spacing:4px;text-transform:uppercase;color:var(--pink-deep);margin-bottom:14px;opacity:.8;}
+.hero h1{font-family:'Dancing Script',cursive;font-size:clamp(44px,9vw,88px);background:linear-gradient(135deg,var(--pink-deep),var(--lilac-deep));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;margin-bottom:8px;}
+.hero .names{font-family:'Dancing Script',cursive;font-size:clamp(20px,4vw,34px);color:var(--lilac-deep);}
+.date-badge{display:inline-block;background:linear-gradient(135deg,var(--pink-deep),var(--lilac-deep));color:white;border-radius:50px;padding:10px 28px;font-size:14px;font-weight:600;letter-spacing:1px;box-shadow:0 4px 15px rgba(200,29,37,.3);margin:18px auto 0;}
+
+/* COUNTER */
+.counter-wrap{position:relative;z-index:1;display:flex;justify-content:center;gap:14px;flex-wrap:wrap;padding:24px 20px 10px;}
+.cbox{background:white;border-radius:20px;padding:16px 22px;text-align:center;box-shadow:0 4px 20px rgba(200,29,37,.12);min-width:80px;border:1.5px solid rgba(200,29,37,.1);transition:transform .3s;}
+.cbox:hover{transform:translateY(-4px);}
+.cbox .num{font-size:34px;font-weight:700;background:linear-gradient(135deg,var(--pink-deep),var(--lilac-deep));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block;line-height:1;}
+.cbox .lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#b06060;margin-top:4px;display:block;}
+
+/* SECTION */
+.section{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:30px 20px;}
+.sec-title{font-family:'Dancing Script',cursive;font-size:38px;color:var(--pink-deep);text-align:center;margin-bottom:36px;}
+
+/* ALBUM GRID */
+.album{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:28px;margin-bottom:60px;}
+
+.photo-card{background:white;border-radius:24px;overflow:hidden;box-shadow:0 6px 30px rgba(200,29,37,.18);border:2px solid rgba(200,29,37,.07);transition:transform .35s,box-shadow .35s;cursor:pointer;}
+.photo-card:hover{transform:translateY(-8px) rotate(.5deg);box-shadow:0 16px 40px rgba(200,29,37,.18);}
+
+.photo-wrap{position:relative;width:100%;aspect-ratio:4/3;overflow:hidden;background:linear-gradient(135deg,#ffd6d6,#ffb3b3);}
+.photo-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .5s;}
+.photo-card:hover .photo-wrap img{transform:scale(1.06);}
+
+.photo-num{position:absolute;top:12px;left:12px;background:rgba(200,29,37,.85);color:white;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
+
+.photo-body{padding:20px 22px 22px;}
+.photo-body .ptitle{font-family:'Dancing Script',cursive;font-size:22px;color:var(--pink-deep);margin-bottom:3px;}
+.photo-body .psub{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--lilac-deep);opacity:.75;margin-bottom:12px;}
+.photo-body .ptext{font-size:13.5px;line-height:1.8;color:#7a2a2a;}
+
+/* LIGHTBOX */
+.lb{display:none;position:fixed;inset:0;background:rgba(50,10,40,.88);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(6px);padding:20px;}
+.lb.open{display:flex;}
+.lb-inner{background:white;border-radius:28px;max-width:720px;width:100%;max-height:90vh;overflow-y:auto;position:relative;}
+.lb-img{width:100%;max-height:55vh;object-fit:contain;border-radius:28px 28px 0 0;background:#ffe0e0;}
+.lb-body{padding:24px 28px 28px;}
+.lb-body h2{font-family:'Dancing Script',cursive;font-size:30px;color:var(--pink-deep);margin-bottom:4px;}
+.lb-body .lb-sub{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--lilac-deep);opacity:.75;margin-bottom:14px;}
+.lb-body p{font-size:15px;line-height:1.9;color:#7a2a2a;}
+.lb-close{position:absolute;top:14px;right:18px;background:rgba(255,255,255,.9);border:none;border-radius:50%;width:36px;height:36px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.15);}
+.lb-nav{display:flex;justify-content:center;gap:12px;margin-top:18px;}
+.lb-btn{background:linear-gradient(135deg,var(--pink-deep),var(--lilac-deep));color:white;border:none;border-radius:50px;padding:9px 22px;cursor:pointer;font-family:'Quicksand',sans-serif;font-size:13px;font-weight:600;}
+
+/* LOVE LETTER */
+.love-letter{background:white;border-radius:24px;padding:40px;margin-bottom:50px;box-shadow:0 4px 30px rgba(200,29,37,.15);border:1.5px solid rgba(200,29,37,.1);text-align:center;}
+.love-letter::before{content:'💌';font-size:40px;display:block;margin-bottom:20px;}
+.love-letter p{font-size:16px;line-height:1.9;color:#7a2a2a;max-width:600px;margin:0 auto 14px;}
+.love-letter .sig{font-family:'Dancing Script',cursive;font-size:28px;color:var(--pink-deep);margin-top:18px;}
+
+/* FOOTER */
+.footer{text-align:center;padding:40px 20px;position:relative;z-index:1;}
+.big-heart{font-size:60px;display:block;animation:hb 1.4s ease-in-out infinite;}
+@keyframes hb{0%,100%{transform:scale(1)}14%{transform:scale(1.15)}28%{transform:scale(1)}42%{transform:scale(1.08)}70%{transform:scale(1)}}
+.footer p{font-family:'Dancing Script',cursive;font-size:24px;color:var(--pink-deep);margin-top:12px;}
+
+@media(max-width:600px){
+  .album{grid-template-columns:1fr;}
+  .love-letter{padding:24px 16px;}
+  .cbox .num{font-size:26px;}
+}
+</style>
+</head>
+<body>
+
+<div class="hearts-bg" id="hbg"></div>
+
+<section class="hero">
+  <h1>Thiziri & Akram</h1>
+  <p class="names">Anniverssaire de mon coeur </p>
+  <div class="date-badge">💕 28 AOUT 2026 💕</div>
+</section>
+
+<div class="section">
+  <h2 class="sec-title">📸 Notre Album Souvenir</h2>
+  <div class="album" id="album"></div>
+</div>
+
+<div class="section">
+  <div class="love-letter">
+    <p>Dir fi blk haja habibi beli mn9derch nwsaflk lhoub dyali lik fi kelma wla zoj Nhbk bezaf haboubi w nta ahla haja sratli fihyati w ntmana n3ich hyati ga3 m3ak w mnba3edch 3lik d9i9a  Lah ghlb ketbt n3ichou had nhar b3ad 3la b3dana Bsah nwa3dk y bb bli nchlh tzawdjou w n3ichou kifkif wndirlk ahla anniversaire fedar w nta 3lblk Kifch 😉💋🍑</p>
+    <p>Nhbk nmouuut 3lik</p>
+    <div class="sig">Wnchlh trouh w terdja3li beslama habibi🌸</div>
+  </div>
+</div>
+
+<div class="footer">
+  <span class="big-heart">❤️</span>
+  <p>Je t'aime, mon amour</p>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lb" id="lb">
+  <div class="lb-inner">
+    <button class="lb-close" id="lbClose">✕</button>
+    <img class="lb-img" id="lbImg" src="" alt="">
+    <div class="lb-body">
+      <h2 id="lbTitle"></h2>
+      <div class="lb-sub" id="lbSub"></div>
+      <p id="lbText"></p>
+      <div class="lb-nav">
+        <button class="lb-btn" id="lbPrev">← Précédent</button>
+        <button class="lb-btn" id="lbNext">Suivant →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const photos = [
+  {
+    num: 1,
+    src: "2.jpg",
+    title: "",
+    subtitle: "",
+    text: `وكيما خليتلي في نهار ميلادي ذكرى ما راح ننساهـا،
+
+طول عمري نتمنى يجي نهار نردّلك الفرحة أضعاف اللي عطيتها لي. كنت نحب نكون معاك في عيد ميلادك هاذ العام، نفرح بيك ونصنعلك نهار يليق بيك... بصح المسافة بين الجزائر وتايلاند خلاتني بعيدة عليك.
+
+لكن صدّقني، غيابي هاذ المرة ما يعنيش بلي نسيتك... بالعكس، راهي في قلبي أمنية: يجي نهار نكون فيه معاك ونحتفل بيك كيما تمنيت، ونخليك تعيش فرحة أكبر من الفرحة اللي عشتها أنا بسببك.
+
+درتلي ذكرى ما تتنساش... وإن شاء الله يجي نهار ونصنعلك أنا ثاني ذكرى أجمل ❤️`
+  }
+,
+ {
+  num: 2,
+  src: "4.jpg",
+  title: "",
+  subtitle: "",
+  text: `ما كانش نهار عادي... كان النهار اللي حب يبرهنلي بلي
+كلامو ما كانش مجرد كلام. جا بخطوة راجل، وطلبني
+بالحلال، وكأنو قالي بلا ما يهدر: أنا حبيتك، وحاب نبني
+معاك حياتي. ومن هنا بدات أجمل حكاية بيناتنا.
+
+في هذا اليوم فهمت بلي الحب الحقيقي ما يتقاسش
+بكثرة الكلام... يتقاس بالخطوة اللي يديرها الإنسان على
+جال اللي يحبها. جا، كلم، وطلبني بالحلال... ومن هذي
+اللحظة عرفت بلي حبي ما كانش مجرد وعد، كان نية
+وقلب وخطوة راجل.
+
+كان يقدر يخلي الحب مجرد كلام بيناتنا، بصح اختار
+يبرهنلي عليه بالفعل. جا نهارها وخطاني أول خطوة
+نحو حياتنا، وطلبني بالحلال... ومن يومها ولات هذي
+الصورة شاهدة على أول مرة حسّيت بلي حبنا راهو أكبر
+من مجرد كلام. ❤️`
+},
+  {
+  num: 3,
+  src: "5.jpg",
+  title: "",
+  subtitle: "Le rêve qu'on partage",
+  text: `أول مرة نروحو للبحر كيف كيف، وأول وحدة من بين بزاف
+الذكريات اللي عشناها مع بعض. ومن هذي اللحظة بدات
+تتجمع أجمل صورنا وحكاياتنا.`
+},{
+    num: 4,
+    src: "6.jpg",
+    title: "",
+    subtitle: "",
+    text: "هذا ما كانش مجرد نهار عادي... كان أجمل نهار في حياتنا، نهار جمعنا ربي فيه بالحلال، ونهار بدات فيه حياتنا مع بعض رسميًا. من هذي اللحظة، ما بقيناش غير \"أنا وإنتّ\"... ولينا حكاية وحدة، وبدينا أول خطوة في الطريق اللي تمنّيت نكملو كامل مع بعض."
+},
+{
+    num: 5,
+    src: "7.jpg",
+    title: "",
+    subtitle: "Le rêve qu'on partage",
+    text: "أجمل \"نحن\". نهار جمع بين فرحتنا، ضحكتنا، وخاتمنا... نهار بقى في ذاكرتي بكل تفاصيله. وكل ما نشوف هذي الصورة، نتفكر قداش حلو كي نعيش لحظات العمر مع الشخص اللي نحب."
+},
+ {
+    num: 6,
+    src: "8.jpg",
+    title: "",
+    subtitle: "",
+    text: "ومن هنا بدات حكاية جديدة. يدك في يدي، وخاتم في إصبعك... ذكرى بسيطة في صورتها، كبيرة في معناها. لحظة خلاتنا نزيدو خطوة جديدة في حكايتنا، ونبدأو نكتبو أجمل الفصول مع بعض."
+},
+ {
+    num: 7,
+    src: "9.jpg",
+    title: "",
+    subtitle: "",
+    text: "في هذي الليلة، ما كانش المهم وين رحنا ولا واش تعشّينا... المهم أننا كنا مع بعض، نعيشو أول تفاصيل حكايتنا في الحلال."
+},
+ {
+    num: 8,
+    src: "10.jpg",
+    title: "",
+    subtitle: "",
+    text: "أول عيد الفطر معاك، وأول مهيبة صغيرة منك... يمكن حاجة بسيطة، بصح عندي كانت كبيرة بزاف. وأحلى حاجة ماشي المهيبة، أحلى حاجة أنك جيت وفرحتني بيك في دارنا. أول عيد، أول مهيبة، وأول مرة تجيني للدار... تفاصيل صغار بصح اليوم كي نشوفهم نحسهم من أجمل ذكرياتنا."
+},
+ {
+    num: 9,
+    src: "12.jpg",
+    title: "",
+    subtitle: "",
+    text: "نهار خرجتني وقلتلي: اليوم أنا نختارلك ... وشريتلي أحلى طقم ٧٥. من نهارها وأنا نقول: عندي ذوق في الراجل قبل ما يكون عندي ذوق في اللبسة. نهار شريتلي الطقم وخرجتني بيه ... بصح ما نعرفش واش كان أحلى: الطقم ولا الفرحة اللي كنت فيها معاك."
+},
+  
+ {
+    num: 6,
+    src: "13.jpg",
+    title: "",
+    subtitle: "",
+    text: "هداك النهار ما خلانيش دقيقة بلا ما يصوّرني في كل بلاصة، في كل لحظة، يخرج تيليفونو ويقولي: \"راكي ملكة ... \". ومن كثرة ما صورني، ولى عندي ألبوم كامل داخل ألبومنا! بصح والله هذيك التفاصيل الصغيرة هي اللي نحبها أكثر حاجة في ذكرياتنا."
+},
+  {
+    num: 6,
+    src: "16.jpg",
+    title: "",
+    subtitle: "",
+    text: "Hadi lmhiba ta3na 2 mhibet l3id lekbir Chehal Kont ferhana bik hadak nhar, W nta Kont thbl habibi"
+},
+ {
+    num: 6,
+    src: "15.jpg",
+    title: "",
+    subtitle: "",
+    text: "Whna kant ahla tajereba dertha li w kant cadeau 🎁 d’anniversaire dyli rekebtni felkhayl habibi w kan nhar chebab bezaf w mayetnsach"
+},
+
+{
+    num: 6,
+    src: "17.jpg",
+    title: "",
+    subtitle: "",
+    text: "Hada nhar wahdouuuu 😂jerebna pour la première fois une plage privée ana w nta w Siyina tajerba bezaf hyla w metna bedahk fiha 😂❤️"
+},
+
+{
+    num: 6,
+    src: "19.jpg",
+    title: "",
+    subtitle: "",
+    text: "W Hadi la deuxième plage 🏖️ privée coco beach lirehnalha vraiment kan nhar wahdou bezaf chebab w jaz magnifique"
+},
+{
+    num: 6,
+    src: "20.jpg",
+    title: "",
+    subtitle: "",
+    text: "Whna nhar lekher licheftk fih 9bal ma trouh letayland kont bezaf ferhana paske sad9etlek w rak rayeh habibi. Hmdlh. Bsah tani bezaf khayfa w heznana 🥺 paske hane93od wahdi w ntwahchek bezaf kima douka. Ani metwahchatk bb graaaave 🫀"
+}
+];
+
+const album = document.getElementById('album');
+photos.forEach((p, i) => {
+  const card = document.createElement('div');
+  card.className = 'photo-card';
+  card.innerHTML = `
+    <div class="photo-wrap">
+      <img src="${p.src}" alt="${p.title}" loading="lazy">
+      <div class="photo-num">${p.num}</div>
+    </div>
+    <div class="photo-body">
+      <div class="ptitle">${p.title}</div>
+      <div class="psub">${p.subtitle}</div>
+      <p class="ptext">${p.text.substring(0,120)}…</p>
+    </div>
+  `;
+  card.addEventListener('click', () => openLB(i));
+  album.appendChild(card);
+});
+
+// Lightbox
+let cur = 0;
+const lb = document.getElementById('lb');
+const lbImg = document.getElementById('lbImg');
+const lbTitle = document.getElementById('lbTitle');
+const lbSub = document.getElementById('lbSub');
+const lbText = document.getElementById('lbText');
+
+function openLB(i) {
+  cur = i;
+  const p = photos[i];
+  lbImg.src = p.src;
+  lbTitle.textContent = p.title;
+  lbSub.textContent = p.subtitle;
+  lbText.textContent = p.text;
+  lb.classList.add('open');
+  lb.scrollTop = 0;
+}
+
+document.getElementById('lbClose').onclick = () => lb.classList.remove('open');
+lb.addEventListener('click', e => { if(e.target===lb) lb.classList.remove('open'); });
+document.getElementById('lbPrev').onclick = () => openLB((cur-1+photos.length)%photos.length);
+document.getElementById('lbNext').onclick = () => openLB((cur+1)%photos.length);
+
+// Counter
+const start = new Date('2024-06-20T00:00:00');
+function tick() {
+  const diff = Date.now() - start.getTime();
+  const s = Math.floor(diff/1000);
+  const m = Math.floor(s/60);
+  const h = Math.floor(m/60);
+  const d = Math.floor(h/24);
+  document.getElementById('cd').textContent = d;
+  document.getElementById('ch').textContent = h%24;
+  document.getElementById('cm').textContent = m%60;
+  document.getElementById('cs').textContent = s%60;
+}
+tick();
+setInterval(tick, 1000);
+
+// Hearts
+const hbg = document.getElementById('hbg');
+const em = ['❤️','💕','💖','💗','❤️','💓','💘','❤️'];
+function mkH() {
+  const el = document.createElement('div');
+  el.className = 'heart-p';
+  el.textContent = em[Math.floor(Math.random()*em.length)];
+  el.style.left = Math.random()*100+'%';
+  el.style.fontSize = (12+Math.random()*16)+'px';
+  const dur = 8+Math.random()*10;
+  el.style.animationDuration = dur+'s';
+  el.style.animationDelay = Math.random()*5+'s';
+  hbg.appendChild(el);
+  setTimeout(()=>el.remove(),(dur+5)*1000);
+}
+for(let i=0;i<40;i++) mkH();
+setInterval(mkH,300);
+
+</script>
+</body>
+<!-- MUSIQUE DE FOND -->
+<audio id="backgroundMusic" loop>
+    <source src="HAPPY BIRTHDAY INSTRUMENTAL(MP3_160K).mp3" type="audio/mpeg">
+    Votre navigateur ne supporte pas la lecture audio.
+</audio>
+
+<button id="musicBtn" onclick="toggleMusic()">🎵</button>
+
+<script>
+    const music = document.getElementById("backgroundMusic");
+    const musicBtn = document.getElementById("musicBtn");
+
+    function toggleMusic() {
+        if (music.paused) {
+            music.play();
+            musicBtn.textContent = "🔊";
+        } else {
+            music.pause();
+            musicBtn.textContent = "🔇";
+        }
+    }
+</script>
+</html>
